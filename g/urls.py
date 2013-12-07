@@ -2,7 +2,7 @@
 #encoding=utf-8
 
 from django.conf.urls import patterns, include, url
-from photo import views
+from g import views
 
 urlpatterns = patterns('',
     # Examples:

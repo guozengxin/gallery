@@ -6,4 +6,4 @@ from django.template import RequestContext
 # Create your views here.
 
 def index(request):
-	return render_to_response('photo/index.html', context_instance=RequestContext(request))
+	return render_to_response('g/index.html', context_instance=RequestContext(request))
