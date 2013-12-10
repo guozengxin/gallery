@@ -11,18 +11,42 @@
 {% endblock %}
 
 {% block content %}
-{% include "g/navbar.html" %}
-<div class="container ph-container">
+<div class="page-header">
+	<h3>简介</h3>
+</div>
+<div class="container intro-container">
 	<div class="row">
-		<div class="col-md-2">
-			<div class="ph-sidebar">
-				<ul class="">
-					<li>
-					</li>
-				</ul>
-			</div>
+	 	<div class="col-md-12 well intro-item">
+			<legend>
+				<span>照片库</span>
+			</legend>
+			<ul>
+				<li>提供所有保存的照片的浏览</li>
+			</ul>
 		</div>
-		<div class="col-md-10">
+	 	<div class="col-md-12 well intro-item">
+			<legend>
+				<span>主题浏览</span>
+			</legend>
+			<ul>
+				<li>按照照片的风格浏览一组照片</li>
+			</ul>
+		</div>
+	 	<div class="col-md-12 well intro-item">
+			<legend>
+				<span>幻灯片</span>
+			</legend>
+			<ul>
+				<li>以幻灯片的风格播放照片</li>
+			</ul>
+		</div>
+	 	<div class="col-md-12 well intro-item">
+			<legend>
+				<span>照片墙</span>
+			</legend>
+			<ul>
+				<li>照片墙式的风格浏览</li>
+			</ul>
 		</div>
 	</div>
 </div>

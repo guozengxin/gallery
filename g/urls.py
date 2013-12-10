@@ -10,4 +10,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^$', views.index, name='index'),
+	url(r'^gallery/$', views.gallery, name='gallery'),
+	url(r'^topic/$', views.topic, name='topic'),
+	url(r'^slide/$', views.slide, name='slide'),
 )

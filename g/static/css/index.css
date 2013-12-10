@@ -1,0 +1,13 @@
+body {
+	background: #959796 url(/static/images/wood-repeat.jpg);
+	/* background: #121212; */
+	color: #fff;
+}
+
+.intro-item {
+	background: rgba(0, 0, 0, 0.5);
+}
+
+.intro-item span {
+	color: #fff;
+}

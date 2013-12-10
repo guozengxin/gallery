@@ -1,0 +1,45 @@
+body {
+}
+
+.ph-sidebar {
+	padding-left: 0px;
+	margin-bottom: 30px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	text-shadow: 0 1px 0 #fff;
+	background-color: #f7f5fa;
+	border-radius: 5px;
+	min-height: 300px;
+}
+
+.ph-sidenav button {
+	margin-bottom: 5px;
+}
+
+.photo-small {
+	position: relative;
+	text-align: center;
+	float: left;
+	margin: 3px;
+	width: 180px;
+	height: 140px;
+	border: 1px solid #292929;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	overflow: hidden;
+}
+
+.photo-small a {
+	display: table-cell;
+	vertical-align: middle;
+	width: 180px;
+	height: 140px;
+}
+
+.photo-small a img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
