@@ -30,16 +30,16 @@
 		</div>
 		<div class="col-md-10">
 			<div class="row">
-				{% for g in gallerys %}
-				{% for p in g.photo %}
+				{% for p in gallerys.0.photo %}
 				<div class="col-md-3">
-					<div class="photo-small">
-						<a href="#">
-							<img src="/static/{{ p.path}}" alt=""/>
+					<div class="g-small">
+						<a href="#" class="g-img">
+							<div class="mask">
+								<img src="/static/{{ p.path}}" alt=""/>
+							</div>
 						</a>
 					</div>
 				</div>
-				{% endfor %}
 				{% endfor %}
 			</div>
 		</div>
