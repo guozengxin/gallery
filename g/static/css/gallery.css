@@ -65,26 +65,27 @@ body {
 
 .g-img img {
 	width: 100%;
-	padding: 10px;
+	margin: 10px;
 	border:1px solid #fff;
+	overflow: hidden;
 }
+/*
 
 .g-img:hover {
 	-webkit-transform:scale(0.8);
 	-webkit-box-shadow:0px 0px 30px #ccc;
 }
+*/
 
 .g-img .mask{
 	width: 100%;
-	background-color: rgb(0, 0, 0);
 	position: absolute;
 	height: 100%;
-	opacity:0.6;
-	cursor:pointer;
-	-webkit-transition-duration: 0.5s;
 	overflow: hidden;
 }
+/*
 
 .g-img:hover .mask {
 	height: 0%;
 }
+*/
