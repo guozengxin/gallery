@@ -13,11 +13,14 @@ class Gallery(models.Model):
 		db_table = 'gallery'
 
 class Photo(models.Model):
-	path = models.CharField(max_length=1024, null=False)
+	name = models.CharField(max_length=128, null=False)
+	small_path = models.CharField(max_length=1024)
+	middle_path = models.CharField(max_length=1024)
+	large_path = models.CharField(max_length=1024)
 	description = models.CharField(max_length=10240)
 	gallery = models.ForeignKey(Gallery)
+	ok = models.BooleanField(default=True)
 	labels = models.CharField(max_length=1024)
-	type = models.CharField(max_length=200)
 
 	def __unicode__(self):
 		return self.path
@@ -27,7 +30,7 @@ class Photo(models.Model):
 class Topic(models.Model):
 	name = models.CharField(max_length=200, null=False, unique=True)
 	photos = models.ManyToManyField(Photo)
-	descripton = models.CharField(max_length=10240)
+	description = models.CharField(max_length=10240)
 
 	def __unicode(self):
 		return self.name
@@ -37,6 +40,7 @@ class Topic(models.Model):
 class Slide(models.Model):
 	name = models.CharField(max_length=200, null=False, unique=True)
 	function = models.CharField(max_length=200)
+	description = models.CharField(max_length=10240)
 
 	def __unicode__(self):
 		return self.name

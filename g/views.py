@@ -10,10 +10,25 @@ from g.service import db_service
 def index(request):
 	return render_to_response('g/index.html', context_instance=RequestContext(request))
 
+# gallery标签下的页面
 def gallery(request):
 	gallerys = db_service.get_gallerys()
 	return render_to_response('g/gallery.html', {'gallerys': gallerys}, context_instance=RequestContext(request))
 
+def gallery_photo_by_gname(request):
+	gname = request.GET.get('gname', None)
+	result = ''
+	if gname is None:
+		result = '<p>参数错误</p>'
+	photos = db_service.photo_by_gname(gname)
+	return render_to_response('g/photo-list.html', {'photos': photos}, context_instance=RequestContext(request))
+
+def gallery_detail(request):
+	gname = request.GET.get('gname', None)
+	photos = db_service.photo_by_gname(gname)
+	return render_to_response('g/gallery-detail.html', {'photos': photos}, context_instance=RequestContext(request))
+
+# topic标签下的页面
 def topic(request):
 	return render_to_response('g/topic.html', context_instance=RequestContext(request))
 

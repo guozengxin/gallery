@@ -1,0 +1,17 @@
+{% load url from future %}
+<div class="row">
+{% for p in photos %}
+<div class="col-md-3">
+	<div class="g-small">
+		<a href="{% url 'g:gallery-detail' %}?gname={{p.gname}}" class="g-img">
+				<img src="{{ p.path}}" alt=""/>
+		</a>
+	</div>
+	<div class="ops-btns">
+		<a class="op-link">删除</a>
+		<a class="op-link">编辑</a>
+	</div>
+</div>
+{% endfor %}
+</div>
+

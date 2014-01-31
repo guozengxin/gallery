@@ -65,27 +65,27 @@ body {
 
 .g-img img {
 	width: 100%;
-	margin: 10px;
+	margin: 5px;
 	border:1px solid #fff;
 	overflow: hidden;
 }
-/*
-
-.g-img:hover {
-	-webkit-transform:scale(0.8);
-	-webkit-box-shadow:0px 0px 30px #ccc;
-}
-*/
 
 .g-img .mask{
-	width: 100%;
+	width: 90%;
 	position: absolute;
 	height: 100%;
 	overflow: hidden;
 }
-/*
 
-.g-img:hover .mask {
-	height: 0%;
+.ops-btns {
+	margin: 0 0 0 10px;
 }
-*/
+
+.ops-btns a:hover {
+	color: #8cea00;
+	cursor: pointer;
+}
+.ops-btns a {
+	color: #fff;
+}
+

@@ -12,7 +12,14 @@
 
 {% block content %}
 <div class="page-header">
-	<h3>照片仓库</h3>
+	<div class="row">
+		<div class="col-md-4">
+			<h3>照片仓库</h3>
+		</div>
+		<div class="col-md-1 col-md-offset-7" style="padding-top: 40px;">
+			<a id="edit-btn" class="pull-right">编辑</a>
+		</div>
+	</div>
 </div>
 <div class="container ph-container">
 	<div class="row">
@@ -23,25 +30,12 @@
 			<ul class="nav ph-sidenav">
 			{% for g in gallerys %}
 				<li>
-					<button class="btn btn-large btn-block">{{ g.gallery.name }}</a>
+					<button class="btn btn-large btn-block">{{ g.name }}</button>
 				</li>
 			{% endfor %}
 			</ul>
 		</div>
-		<div class="col-md-10">
-			<div class="row">
-				{% for p in gallerys.0.photo %}
-				<div class="col-md-3">
-					<div class="g-small">
-						<a href="#" class="g-img">
-							<div class="mask">
-								<img src="/static/{{ p.path}}" alt=""/>
-							</div>
-						</a>
-					</div>
-				</div>
-				{% endfor %}
-			</div>
+		<div id='photo-list' class="col-md-10">
 		</div>
 	</div>
 </div>
