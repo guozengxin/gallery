@@ -9,20 +9,12 @@ def get_gallerys():
 
 def photo_by_gname(gname):
 	g = Gallery.objects.filter(name=gname)
-	photos = Photo.objects.filter(gallery=g, type='TI')
-	oriphotos = Photo.objects.filter(gallery=g, type='OI')
-	result = []
-	for p in photos:
-		oriname = p.name.replace('_thumb', '')
-		op = oriphotos.filter(name=oriname)
-		if len(op) > 0:
-			r = {'name':p.name, 'oriname':oriname, 'path':p.path}
-			r['oripath'] = op[0].path
-			r['gallery_id'] = p.gallery_id
-			r['gname'] = gname
-			r['description'] = p.description
-			r['labels'] = p.labels
-			result.append(r)
+	photos = Photo.objects.filter(gallery=g, ok=True)
+	return photos
 
-	return result
-
+def delete_photo(pname):
+	print pname
+	ps = Photo.objects.filter(name=pname)
+	for p in ps:
+		p.ok = False
+		p.save()
