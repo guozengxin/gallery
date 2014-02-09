@@ -3,6 +3,7 @@
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
 from django.template import RequestContext
+from django.utils import simplejson
 
 from g.service import db_service
 
@@ -32,6 +33,14 @@ def gallery_delete_photo(request):
 	if pname:
 		db_service.delete_photo(pname)
 	return HttpResponse('')
+
+def gallery_save_info(request):
+	pname = request.POST.get('pname', None)
+	topic = request.POST.get('topic', None)
+	desc = request.POST.get('desc', None)
+	labels = request.POST.get('labels', None)
+	message = db_service.save_info(pname, topic, desc, labels)
+	return HttpResponse(simplejson.dumps({'message': message}))
 
 # topic标签下的页面
 def topic(request):

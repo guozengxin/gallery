@@ -77,6 +77,10 @@ body {
 	overflow: hidden;
 }
 
+a#edit-btn:hover{
+	cursor: pointer;
+}
+
 .ops-btns {
 	margin: 0 0 0 10px;
 }
@@ -89,3 +93,40 @@ body {
 	color: #fff;
 }
 
+.pop-box {   
+	z-index: 9999; /*这个数值要足够大，才能够显示在最上层*/  
+	margin-bottom: 3px;   
+	display: none;
+	left: 30%;
+	/*vertical-align:middle;*/
+	width: 400px;
+	position: fixed !important;
+	position: absolute;   
+	background: #AAA;   
+	border:solid 1px #6e8bde;   
+	color: #0A0A0A;
+}   
+
+.pop-box img{
+	height: 200px;
+	width: auto;
+}
+
+.close a {
+	color: #0A0A0A;
+}
+
+#maskbg {  
+	background-color: Gray;
+	display: none;
+	left: 0px;
+	opacity: 0.5;
+	position: absolute;
+	top: 0px;
+	z-index: 9000;  
+	width: 100%;
+	height: 100%;
+	filter: alpha(opacity=50);
+	-moz-opacity: 0.5;
+	-khtml-opacity: 0.5;
+}  

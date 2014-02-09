@@ -15,6 +15,7 @@ urlpatterns = patterns('',
 	url(r'^gallery/photo-by-gname$', views.gallery_photo_by_gname, name='gallery-photo-by-gname'),
 	url(r'^gallery/detail/$', views.gallery_detail, name='gallery-detail'),
 	url(r'^gallery/delete-photo$', views.gallery_delete_photo, name='gallery-delete-photo'),
+	url(r'^gallery/save-info$', views.gallery_save_info, name='gallery-save-info'),
 
 	url(r'^topic/$', views.topic, name='topic'),
 	url(r'^slide/$', views.slide, name='slide'),

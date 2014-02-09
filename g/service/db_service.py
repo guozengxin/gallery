@@ -18,3 +18,8 @@ def delete_photo(pname):
 	for p in ps:
 		p.ok = False
 		p.save()
+
+def save_info(pname, topic, desc, labels):
+	ps = Photo.objects.filter(name=pname)
+	if len(ps) > 0:
+		p = ps[0]
