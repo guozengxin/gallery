@@ -81,7 +81,7 @@ $(function() {
 			desc: desc,
 			labels: labels
 		}, function(data) {
-			var obj = JSON.parse();
+			var obj = JSON.parse(data);
 			$('#message').text(obj.message);
 		});
 	}
@@ -90,19 +90,32 @@ $(function() {
 	function showEdit(cur) {  
 		//定位图片url，并计算图片名
 		var url = $(cur).parent().parent().find('a img').attr('src');
+		var pname = get_pname(url);
+		$.post('search-info', {
+			pname: pname,
+		}, function(data) {
+			var obj = JSON.parse(data);
+			var succ = obj.succ;
+			if (succ) {
+				var bh = $("body").height();  
+				var bw = $("body").width();  
+				$("#maskbg").css({  
+					height:bh,  
+					width:bw,  
+					display:"block"  
+				});  
+				$(".close a").click(closeEdit);
+				$("#pop-div img").attr('src', url);
+				var t = ($(window).height() - $('#pop-div').height()) / 2;
+				$('#pop-div').css('top', t);
+				$("#pop-div").show();
+			} else {
+				alert("查询图片信息失败!");
+			}
+		}).fail(function() {
+			alert("查询图片信息失败!");
+		});
 
-		var bh = $("body").height();  
-		var bw = $("body").width();  
-		$("#maskbg").css({  
-			height:bh,  
-			width:bw,  
-			display:"block"  
-		});  
-		$(".close a").click(closeEdit);
-		$("#pop-div img").attr('src', url);
-		var t = ($(window).height() - $('#pop-div').height()) / 2;
-		$('#pop-div').css('top', t);
-		$("#pop-div").show();
 	}  
 
 	//关闭灰色 jQuery 遮罩  

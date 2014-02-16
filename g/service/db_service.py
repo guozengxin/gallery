@@ -23,3 +23,14 @@ def save_info(pname, topic, desc, labels):
 	ps = Photo.objects.filter(name=pname)
 	if len(ps) > 0:
 		p = ps[0]
+		p.labels = labels
+		p.desc = desc
+		p.save()
+		return 'success'
+	return 'fail'
+
+def search_info(pname):
+	ps = Photo.objects.filter(name=pname)
+	info = {}
+	if len(ps) > 0:
+
