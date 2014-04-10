@@ -1,132 +1,34 @@
 body {
-	background: #959796 url(/static/images/wood-repeat.jpg);
+	/*background: #959796 url(/static/images/black-sky.jpg);*/
+	/* background: #fffffb; */
+	background: #333 url(/static/images/black-sky2.jpg);
 	color: #fff;
 }
 
-.ph-sidebar {
-	border-style:none;
-	padding: 10px 0px 10px 0px;
-	margin-bottom: 30px;
-	background: rgba(0, 0, 0, 0.5);
-	/* text-shadow: 0 1px 0 #fff; */
-	/* background-color: #f7f5fa; */
-	min-height: 300px;
+.gallery-set {
 }
 
-.ph-sidebar legend {
-	text-align:center;
+.g-preview {
+	margin: 20px 0px;
+	height: 166px;
+	width: 250px;
+	position: relative;
 }
 
-.ph-sidebar small {
-	color: #fff;
-}
-
-.ph-sidenav button {
-	background: rgba(0, 0, 0, 0);
-	margin-bottom: 5px;
-	color: #fff;
-}
-
-.ph-sidenav button:hover {
-	color: #fff;
-	background-color: rgba(0, 0, 0, 0.5);
-}
-
-.ph-sidenav button:focus {
-	color: #fff;
-	background-color: rgba(0, 0, 0, 0.5);
-	outline: none;
-}
-
-.g-small {
-	height: 150px;
-	margin: 10px;
-}
-
-/*
-.g-small a {
-	display: table-cell;
-	vertical-align: middle;
-	width: 180px;
-	height: 140px;
-}
-
-.g-small a img {
-	display: block;
-	width: 100%;
-	height: auto;
-}
-*/
-
-.g-img {
+.clip-photo {
+	border: 5px solid #fff;
+	position: absolute;
+	margin: 0 auto;
+	overflow: hidden;
 	float: left;
-	-webkit-transition-duration: 0.5s;
+	width: 230px;
+	height: 153px;
 }
 
-.g-img img {
-	width: 100%;
-	margin: 5px;
-	border:1px solid #fff;
-	overflow: hidden;
+.clip-photo img {
+	width: 230px;
+	height: auto;
+	-moz-box-shadow: 1px 1px 10px #000;
+	-webkit-box-shadow: 1px 1px 10px #000;
+	box-shadow: 1px 1px 10px #000;
 }
-
-.g-img .mask{
-	width: 90%;
-	position: absolute;
-	height: 100%;
-	overflow: hidden;
-}
-
-a#edit-btn:hover{
-	cursor: pointer;
-}
-
-.ops-btns {
-	margin: 0 0 0 10px;
-}
-
-.ops-btns a:hover {
-	color: #8cea00;
-	cursor: pointer;
-}
-.ops-btns a {
-	color: #fff;
-}
-
-.pop-box {   
-	z-index: 9999; /*这个数值要足够大，才能够显示在最上层*/  
-	margin-bottom: 3px;   
-	display: none;
-	left: 30%;
-	/*vertical-align:middle;*/
-	width: 400px;
-	position: fixed !important;
-	position: absolute;   
-	background: #AAA;   
-	border:solid 1px #6e8bde;   
-	color: #0A0A0A;
-}   
-
-.pop-box img{
-	height: 200px;
-	width: auto;
-}
-
-.close a {
-	color: #0A0A0A;
-}
-
-#maskbg {  
-	background-color: Gray;
-	display: none;
-	left: 0px;
-	opacity: 0.5;
-	position: absolute;
-	top: 0px;
-	z-index: 9000;  
-	width: 100%;
-	height: 100%;
-	filter: alpha(opacity=50);
-	-moz-opacity: 0.5;
-	-khtml-opacity: 0.5;
-}  

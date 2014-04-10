@@ -18,6 +18,7 @@ def gallery(request):
 	查询所有相册信息
 	'''
 	gallerys = db_service.get_gallerys()
+	print gallerys[0]
 	return render_to_response('g/gallery.html', {'gallerys': gallerys}, context_instance=RequestContext(request))
 
 def gallery_photo_by_gname(request):
@@ -37,8 +38,8 @@ def gallery_detail(request):
 	参数: gname(相册名)
 	'''
 	gname = request.GET.get('gname', None)
-	photos = db_service.photo_by_gname(gname)
-	return render_to_response('g/gallery-detail.html', {'photos': photos}, context_instance=RequestContext(request))
+	gallery = db_service.photo_by_gname(gname)
+	return render_to_response('g/gallery-detail.html', {'gallery': gallery}, context_instance=RequestContext(request))
 
 def gallery_delete_photo(request):
 	'''

@@ -11,69 +11,20 @@
 {% endblock %}
 
 {% block content %}
-<div class="page-header">
+<div class="container gallery-set">
 	<div class="row">
-		<div class="col-md-4">
-			<h3>照片仓库</h3>
-		</div>
-		<div class="col-md-1 col-md-offset-7" style="padding-top: 40px;">
-			<a id="edit-btn" class="pull-right">编辑相册</a>
-		</div>
-	</div>
-</div>
-<div class="container ph-container">
-	<div class="row">
-		<div class="col-md-2 ph-sidebar">
-			<legend>
-				<small>相册名称</small>
-			</legend>
-			<ul class="nav ph-sidenav">
-			{% for g in gallerys %}
-				<li>
-					<button class="btn btn-large btn-block">{{ g.name }}</button>
-				</li>
-			{% endfor %}
-			</ul>
-		</div>
-		<div id='photo-list' class="col-md-10">
-		</div>
-	</div>
-</div>
-<div class="pop-box" id="pop-div">
-	<div>
-		<p class="close"><a href="#">关闭</a></p> 
-	</div>
-	<div>
-		<img id="edit-img" src=""/>
-	</div>
-	<div id="photo-info" class="well form-horizontal">
-		<legend>
-			<small>编辑照片</small>
-		</legend>
-		<div class="control-group">
-			<label class="control-label" for="photo-topic">照片主题</label>
-			<div class="controls" id="photo-topic">
-				<input type="text" id="photo-topic-input" value="" placeholder="请输入照片主题" />
+		{% for g in gallerys %}
+		<div class="col-md-3">
+			<div class="g-preview">
+				{% for p in g.p_preview %}
+				<a class="clip-photo" href="#" style="-webkit-transform: rotate({{p.degree}})" >
+					<img src="{{p.url}}" />
+				</a>
+				{% endfor %}
 			</div>
 		</div>
-		<div class="control-group">
-			<label class="control-label" for="photo-desc">照片描述</label>
-			<div class="controls" id="photo-desc">
-				<input type="text" id="photo-desc-input" value="" placeholder="请输入照片描述" />
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label" for="photo-labels">照片标签</label>
-			<div class="controls" id="photo-labels">
-				<input type="text" id="photo-labels-input" value="" placeholder="请输入照片标签,用逗号隔开" />
-			</div>
-		</div>
-		<div class="control-group">
-			<input type="button" id="save" value="保存" />
-		</div>
-		<p id="message"></p>
+		{% endfor %}
 	</div>
 </div>
-<div id="maskbg"></div>
 {% endblock %}
 

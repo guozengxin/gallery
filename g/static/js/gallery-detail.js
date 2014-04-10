@@ -1,237 +1,318 @@
+
 $(window).load(function() {
-	sliderLeft = $('#thumbScroller .container').position().left;
-	padding = $('#outer_container').css('paddingRight').replace("px", "");
-	sliderWidth = $(window).width()-padding;
-	$('#thumbScroller').css('width', sliderWidth);
-	var totalContent=0;
-	$('#thumbScroller .content').each(function() {
-		totalContent+=$(this).innerWidth();
-		$('#thumbScroller .container').css('width',totalContent);
-	});
-	$('#thumbScroller').mousemove(function(e){
-		if($('#thumbScroller  .container').width()>sliderWidth){
-			var mouseCoords=(e.pageX - this.offsetLeft);
-			var mousePercentX=mouseCoords/sliderWidth;
-			var destX=-(((totalContent-(sliderWidth))-sliderWidth)*(mousePercentX));
-			var thePosA=mouseCoords-destX;
-			var thePosB=destX-mouseCoords;
-			var animSpeed=600; //ease amount
-			var easeType='easeOutCirc';
-			if(mouseCoords==destX){
-				$('#thumbScroller .container').stop();
+	//set default view mode
+	defaultViewMode = "full"; //full (fullscreen background), fit (fit to window), original (no scale)
+	//cache vars
+	bg = $("#bg");
+	bgimg = $("#bg #bgimg");
+	preloader = $("#preloader");
+	outer_container = $("#outer_container");
+	outer_container_a = $("#outer_container a.thumb_link");
+	toolbar = $("#toolbar");
+	nextimage_tip = $("#nextimage_tip");
+
+	toolbar.data("imageViewMode", defaultViewMode); //default view mode
+	ImageViewMode(toolbar.data("imageViewMode"));
+	//cache vars
+	$customScrollBox=$("#customScrollBox");
+	$customScrollBox_container=$("#customScrollBox .container");
+	$customScrollBox_content=$("#customScrollBox .content");
+	$dragger_container=$("#dragger_container");
+	$dragger=$("#dragger");
+
+	CustomScroller();
+
+	function CustomScroller(){
+		outerMargin=0;
+		innerMargin=20;
+		$customScrollBox.height($(window).height()-outerMargin);
+		$dragger_container.height($(window).height()-innerMargin);
+		visibleHeight=$(window).height()-outerMargin;
+		if($customScrollBox_container.height()>visibleHeight){ //custom scroll depends on content height
+			$dragger_container,$dragger.css("display","block");
+			totalContent=$customScrollBox_content.height();
+			draggerContainerHeight=$(window).height()-innerMargin;
+			animSpeed=400; //animation speed
+			easeType="easeOutCirc"; //easing type
+			bottomSpace=1.05; //bottom scrolling space
+			targY=0;
+			draggerHeight=$dragger.height();
+			$dragger.draggable({ 
+				axis: "y", 
+				containment: "parent", 
+				drag: function(event, ui) {
+					Scroll();
+				}, 
+				stop: function(event, ui) {
+					DraggerOut();
+				}
+			});
+
+			//scrollbar click
+			$dragger_container.click(function(e) {
+				var mouseCoord=(e.pageY - $(this).offset().top);
+				var targetPos=mouseCoord+$dragger.height();
+				if(targetPos<draggerContainerHeight){
+					$dragger.css("top",mouseCoord);
+					Scroll();
+				} else {
+					$dragger.css("top",draggerContainerHeight-$dragger.height());
+					Scroll();
+				}
+			});
+
+			//mousewheel
+			$(function($) {
+				$customScrollBox.bind("mousewheel", function(event, delta) {
+					vel = Math.abs(delta*10);
+					$dragger.css("top", $dragger.position().top-(delta*vel));
+					Scroll();
+					if($dragger.position().top<0){
+						$dragger.css("top", 0);
+						$customScrollBox_container.stop();
+						Scroll();
+					}
+					if($dragger.position().top>draggerContainerHeight-$dragger.height()){
+						$dragger.css("top", draggerContainerHeight-$dragger.height());
+						$customScrollBox_container.stop();
+						Scroll();
+					}
+					return false;
+				});
+			});
+
+			function Scroll(){
+				var scrollAmount=(totalContent-(visibleHeight/bottomSpace))/(draggerContainerHeight-draggerHeight);
+				var draggerY=$dragger.position().top;
+				targY=-draggerY*scrollAmount;
+				var thePos=$customScrollBox_container.position().top-targY;
+				$customScrollBox_container.stop().animate({top: "-="+thePos}, animSpeed, easeType); //with easing
 			}
-			else if(mouseCoords>destX){
-				//$('#thumbScroller .container').css('left',-thePosA); //without easing
-				$('#thumbScroller .container').stop().animate({left: -thePosA}, animSpeed,easeType); //with easing
+
+			//dragger hover
+			$dragger.mouseup(function(){
+				DraggerOut();
+			}).mousedown(function(){
+				DraggerOver();
+			});
+
+			function DraggerOver(){
+				$dragger.css("background", "url(/static/images/round_custom_scrollbar_bg_over.png)");
 			}
-			else if(mouseCoords<destX){
-				//$('#thumbScroller .container').css('left',thePosB); //without easing
-				$('#thumbScroller .container').stop().animate({left: thePosB}, animSpeed,easeType); //with easing
+
+			function DraggerOut(){
+				$dragger.css("background", "url(/static/images/round_custom_scrollbar_bg.png)");
 			}
+		} else { //hide custom scrollbar if content is short
+			$dragger,$dragger_container.css("display","none");
 		}
+	}
+
+	//resize browser window functions
+	$(window).resize(function() {
+		FullScreenBackground("#bgimg"); //scale bg image
+		$dragger.css("top",0); //reset content scroll
+		$customScrollBox_container.css("top",0);
+		$customScrollBox.unbind("mousewheel");
+		CustomScroller();
 	});
-	$('#thumbScroller  .thumb').each(function () {
-		$(this).fadeTo(fadeSpeed, 0.6);
+
+	LargeImageLoad(bgimg);
+	//loading bg image
+	bgimg.load(function() {
+		LargeImageLoad($(this));
 	});
-	var fadeSpeed=200;
-	$('#thumbScroller .thumb').hover(
+
+	function LargeImageLoad($this){
+		preloader.fadeOut("fast"); //hide preloader
+		$this.removeAttr("width").removeAttr("height").css({ width: "", height: "" }); //lose all previous dimensions in order to rescale new image data
+		bg.data("originalImageWidth",$this.width()).data("originalImageHeight",$this.height());
+		if(bg.data("newTitle")){
+			$this.attr("title",bg.data("newTitle")); //set new image title attribute
+		}
+		FullScreenBackground($this); //scale new image
+		bg.data("nextImage",$(outer_container.data("selectedThumb")).next().attr("href")); //get and store next image
+		if(typeof itemIndex!="undefined"){
+			if(itemIndex==lastItemIndex){ //check if it is the last image
+				bg.data("lastImageReached","Y");
+				bg.data("nextImage",outer_container_a.first().attr("href")); //get and store next image
+			} else {
+				bg.data("lastImageReached","N");
+			}
+		} else {
+			bg.data("lastImageReached","N");
+		}
+		$this.fadeIn("slow"); //fadein background image
+		if(bg.data("nextImage") || bg.data("lastImageReached")=="Y"){ //don't close thumbs pane on 1st load
+			SlidePanels("close"); //close the left pane
+		}
+		NextImageTip();
+	}
+
+	//slide in/out left pane
+	outer_container.hover(
 			function(){ //mouse over
-				$(this).fadeTo(fadeSpeed, 1);
+				SlidePanels("open");
 			},
 			function(){ //mouse out
-				$(this).fadeTo(fadeSpeed, 0.6);
+				SlidePanels("close");
 			}
 			);
+
+	//Clicking on thumbnail changes the background image
+	outer_container_a.click(function(event){
+		event.preventDefault();
+		var $this=this;
+		bgimg.css("display","none");
+		preloader.fadeIn("fast"); //show preloader
+		//style clicked thumbnail
+		outer_container_a.each(function() {
+			$(this).children(".selected").css("display","none");
+		});
+		$(this).children(".selected").css("display","block");
+		//get and store next image and selected thumb 
+		outer_container.data("selectedThumb",$this); 
+		bg.data("nextImage",$(this).next().attr("href")); 	
+		bg.data("newTitle",$(this).children("img").attr("title")); //get and store new image title attribute
+		itemIndex=getIndex($this); //get clicked item index
+		lastItemIndex=(outer_container_a.length)-1; //get last item index
+		bgimg.attr("src", "").attr("src", $this); //switch image
+	}); 
+
+	//clicking on large image loads the next one
+	bgimg.click(function(event){
+		var $this=$(this);
+		if(bg.data("nextImage")){ //if next image data is stored
+			$this.css("display","none");
+			preloader.fadeIn("fast"); //show preloader
+			$(outer_container.data("selectedThumb")).children(".selected").css("display","none"); //deselect thumb
+			if(bg.data("lastImageReached")!="Y"){
+				$(outer_container.data("selectedThumb")).next().children(".selected").css("display","block"); //select new thumb
+			} else {
+				outer_container_a.first().children(".selected").css("display","block"); //select new thumb - first
+			}
+			//store new selected thumb
+			var selThumb=outer_container.data("selectedThumb");
+			if(bg.data("lastImageReached")!="Y"){
+				outer_container.data("selectedThumb",$(selThumb).next()); 
+			} else {
+				outer_container.data("selectedThumb",outer_container_a.first()); 
+			}
+			bg.data("newTitle",$(outer_container.data("selectedThumb")).children("img").attr("title")); //get and store new image title attribute
+			if(bg.data("lastImageReached")!="Y"){
+				itemIndex++;
+			} else {
+				itemIndex=0;
+			}
+			$this.attr("src", "").attr("src", bg.data("nextImage")); //switch image
+		}
+	});
+
+	//function to get element index (fuck you IE!)
+	function getIndex(theItem){
+		for ( var i = 0, length = outer_container_a.length; i < length; i++ ) {
+			if ( outer_container_a[i] === theItem ) {
+				return i;
+			}
+		}
+	}
+
+	//toolbar (image view mode button) hover
+	toolbar.hover(
+			function(){ //mouse over
+				$(this).stop().fadeTo("fast",1);
+			},
+			function(){ //mouse out
+				$(this).stop().fadeTo("fast",0.8);
+			}
+			); 
+	toolbar.stop().fadeTo("fast",0.8); //set its original state
+
+	//Clicking on toolbar changes the image view mode
+	toolbar.click(function(event){
+		if(toolbar.data("imageViewMode")=="full"){
+			ImageViewMode("fit");
+		} else if(toolbar.data("imageViewMode")=="fit") {
+			ImageViewMode("original");
+		} else if(toolbar.data("imageViewMode")=="original"){
+			ImageViewMode("full");
+		}
+	});
+
+	//next image balloon tip
+	function NextImageTip(){
+		if(bg.data("nextImage")){ //check if this is the first image
+			nextimage_tip.stop().css("right",20).fadeIn("fast").fadeOut(2000,"easeInExpo",function(){nextimage_tip.css("right",$(window).width());});
+		}
+	}
+
+	//slide in/out left pane function
+	function SlidePanels(action){
+		var speed=900;
+		var easing="easeInOutExpo";
+		if(action=="open"){
+			$("#arrow_indicator").fadeTo("fast",0);
+			outer_container.stop().animate({left: 0}, speed,easing);
+			bg.stop().animate({left: 585}, speed,easing);
+		} else {
+			outer_container.stop().animate({left: -710}, speed,easing);
+			bg.stop().animate({left: 0}, speed,easing,function(){$("#arrow_indicator").fadeTo("fast",1);});
+		}
+	}
+
+	//Image scale function
+	function FullScreenBackground(theItem){
+		var winWidth=$(window).width();
+		var winHeight=$(window).height();
+		var imageWidth=$(theItem).width();
+		var imageHeight=$(theItem).height();
+		if(toolbar.data("imageViewMode")!="original"){ //scale
+			$(theItem).removeClass("with_border").removeClass("with_shadow"); //remove extra styles of orininal view mode
+			var picHeight = imageHeight / imageWidth;
+			var picWidth = imageWidth / imageHeight;
+			if(toolbar.data("imageViewMode")!="fit"){ //image view mode: full
+				if ((winHeight / winWidth) < picHeight) {
+					$(theItem).css("width",winWidth).css("height",picHeight*winWidth);
+				} else {
+					$(theItem).css("height",winHeight).css("width",picWidth*winHeight);
+				};
+			} else { //image view mode: fit
+				if ((winHeight / winWidth) > picHeight) {
+					$(theItem).css("width",winWidth).css("height",picHeight*winWidth);
+				} else {
+					$(theItem).css("height",winHeight).css("width",picWidth*winHeight);
+				};
+			}
+			//center it
+			$(theItem).css("margin-left",((winWidth - $(theItem).width())/2)).css("margin-top",((winHeight - $(theItem).height())/2));
+		} else { //no scale
+			//add extra styles for orininal view mode
+			$(theItem).addClass("with_border").addClass("with_shadow");
+			//set original dimensions
+			$(theItem).css("width",bg.data("originalImageWidth")).css("height",bg.data("originalImageHeight"));
+			//center it
+			$(theItem).css("margin-left",((winWidth-$(theItem).outerWidth())/2)).css("margin-top",((winHeight-$(theItem).outerHeight())/2));
+		}
+	}
+
+	//image view mode function - full or fit
+	function ImageViewMode(theMode){
+		$.data(toolbar, "imageViewMode", theMode); //store new mode
+		FullScreenBackground(bgimg); //scale bg image
+		//re-style button
+		if(theMode=="full"){
+			toolbar.html("<span class='lightgrey'>IMAGE VIEW MODE &rsaquo;</span> FULL");
+		} else if(theMode=="fit") {
+			toolbar.html("<span class='lightgrey'>IMAGE VIEW MODE &rsaquo;</span> FIT");
+		} else {
+			toolbar.html("<span class='lightgrey'>IMAGE VIEW MODE &rsaquo;</span> ORIGINAL");
+		}
+	}
+
+	//preload script images
+	var images=["/static/images/ajax-loader_dark.gif","/static/images/round_custom_scrollbar_bg_over.png"];
+	$.each(images, function(i) {
+		images[i] = new Image();
+		images[i].src = this;
+	});
 });
-
-$(window).resize(function() {
-	//$('#thumbScroller .container').css('left',sliderLeft); //without easing
-	$('#thumbScroller .container').stop().animate({left: sliderLeft}, 400,'easeOutCirc'); //with easing
-	$('#thumbScroller').css('width',$(window).width()-padding);
-	sliderWidth=$(window).width()-padding;
-});
-
-$(function() {
-	//current thumb's index being viewed
-	var current			= -1;
-	//cache some elements
-	var $btn_thumbs = $('#fp_thumbtoggle');
-	var $loader		= $('#fp_loading');
-	var $btn_next		= $('#fp_next');
-	var $btn_prev		= $('#fp_prev');
-	var $thumbScroller	= $('#thumbScroller');
-
-	//total number of thumbs
-	var nmb_thumbs		= $thumbScroller.find('.content').length;
-
-	//preload thumbs
-	var cnt_thumbs 		= 0;
-	for(var i=0;i<nmb_thumbs;++i){
-		var $thumb = $thumbScroller.find('.content:nth-child('+parseInt(i+1)+')');
-			$('<img/>').load(function(){
-				++cnt_thumbs;
-				if(cnt_thumbs == nmb_thumbs)
-				//display the thumbs on the bottom of the page
-				showThumbs(2000);
-			}).attr('src',$thumb.find('img').attr('src'));
-			}
-
-
-			//make the document scrollable
-			//when the the mouse is moved up/down
-			//the user will be able to see the full image
-			makeScrollable();
-
-			//clicking on a thumb...
-			$thumbScroller.find('.content').bind('click',function(e){
-				var $content= $(this);
-				var $elem 	= $content.find('img');
-				//keep track of the current clicked thumb
-				//it will be used for the navigation arrows
-				current 	= $content.index()+1;
-				//get the positions of the clicked thumb
-				var pos_left 	= $elem.offset().left;
-				var pos_top 	= $elem.offset().top;
-				//clone the thumb and place
-				//the clone on the top of it
-				var $clone 	= $elem.clone()
-				.addClass('clone')
-				.css({
-					'position':'fixed',
-					'left': pos_left + 'px',
-					'top': pos_top + 'px'
-				}).insertAfter($('BODY'));
-
-			var windowW = $(window).width();
-			var windowH = $(window).height();
-
-			//animate the clone to the center of the page
-			$clone.stop()
-				.animate({
-					'left': windowW/2 + 'px',
-					'top': windowH/2 + 'px',
-					'margin-left' :-$clone.width()/2 -5 + 'px',
-					'margin-top': -$clone.height()/2 -5 + 'px'
-				},500,
-				function(){
-					var $theClone 	= $(this);
-					var ratio		= $clone.width()/120;
-					var final_w		= 400*ratio;
-
-					$loader.show();
-
-					//expand the clone when large image is loaded
-					$('<img class="fp_preview"/>').load(function(){
-						var $newimg 		= $(this);
-						var $currImage 	= $('#fp_gallery').children('img:first');
-						$newimg.insertBefore($currImage);
-						$loader.hide();
-						//expand clone
-						$theClone.animate({
-							'opacity'		: 0,
-							'top'			: windowH/2 + 'px',
-							'left'			: windowW/2 + 'px',
-							'margin-top'	: '-200px',
-							'margin-left'	: -final_w/2 + 'px',
-							'width'			: final_w + 'px',
-							'height'		: '400px'
-						},1000,function(){$(this).remove();});
-						//now we have two large images on the page
-						//fadeOut the old one so that the new one gets shown
-						$currImage.fadeOut(2000,function(){
-							$(this).remove();
-						});
-						//show the navigation arrows
-						showNav();
-					}).attr('src',$elem.attr('alt'));
-				});
-			//hide the thumbs container
-			hideThumbs();
-			e.preventDefault();
-			});
-
-			//clicking on the "show thumbs"
-			//displays the thumbs container and hides
-			//the navigation arrows
-			$btn_thumbs.bind('click',function(){
-				showThumbs(500);
-				hideNav();
-			});
-
-			function hideThumbs(){
-				$('#outer_container').stop().animate({'bottom':'-160px'},500);
-				showThumbsBtn();
-			}
-
-			function showThumbs(speed){
-				$('#outer_container').stop().animate({'bottom':'0px'},speed);
-				hideThumbsBtn();
-			}
-
-			function hideThumbsBtn(){
-				$btn_thumbs.stop().animate({'bottom':'-50px'},500);
-			}
-
-			function showThumbsBtn(){
-				$btn_thumbs.stop().animate({'bottom':'0px'},500);
-			}
-
-			function hideNav(){
-				$btn_next.stop().animate({'right':'-50px'},500);
-				$btn_prev.stop().animate({'left':'-50px'},500);
-			}
-
-			function showNav(){
-				$btn_next.stop().animate({'right':'0px'},500);
-				$btn_prev.stop().animate({'left':'0px'},500);
-			}
-
-			//events for navigating through the set of images
-			$btn_next.bind('click',showNext);
-			$btn_prev.bind('click',showPrev);
-
-			//the aim is to load the new image,
-			//place it before the old one and fadeOut the old one
-			//we use the current variable to keep track which
-			//image comes next / before
-			function showNext(){
-				++current;
-				var $e_next	= $thumbScroller.find('.content:nth-child('+current+')');
-						if($e_next.length == 0){
-							current = 1;
-							$e_next	= $thumbScroller.find('.content:nth-child('+current+')');
-								}
-								$loader.show();
-								$('<img class="fp_preview"/>').load(function(){
-									var $newimg 		= $(this);
-									var $currImage 		= $('#fp_gallery').children('img:first');
-									$newimg.insertBefore($currImage);
-									$loader.hide();
-									$currImage.fadeOut(2000,function(){$(this).remove();});
-								}).attr('src',$e_next.find('img').attr('alt'));
-								}
-
-								function showPrev(){
-									--current;
-									var $e_next	= $thumbScroller.find('.content:nth-child('+current+')');
-										if($e_next.length == 0){
-											current = nmb_thumbs;
-											$e_next	= $thumbScroller.find('.content:nth-child('+current+')');
-												}
-												$loader.show();
-												$('<img class="fp_preview"/>').load(function(){
-													var $newimg 		= $(this);
-													var $currImage 		= $('#fp_gallery').children('img:first');
-													$newimg.insertBefore($currImage);
-													$loader.hide();
-													$currImage.fadeOut(2000,function(){$(this).remove();});
-												}).attr('src',$e_next.find('img').attr('alt'));
-												}
-
-												function makeScrollable(){
-													$(document).bind('mousemove',function(e){
-														var top = (e.pageY - $(document).scrollTop()/2) ;
-														$(document).scrollTop(top);
-													});
-												}
-												});

@@ -18,6 +18,5 @@ urlpatterns = patterns('',
 	url(r'^gallery/save-info$', views.gallery_save_info, name='gallery-save-info'),
 	url(r'^gallery/search-info$', views.gallery_search_info, name='gallery-search-info'),
 
-	url(r'^topic/$', views.topic, name='topic'),
-	url(r'^slide/$', views.slide, name='slide'),
+	url(r'^star/$', views.topic, name='star'),
 )
