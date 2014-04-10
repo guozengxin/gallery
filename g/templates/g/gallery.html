@@ -14,13 +14,15 @@
 <div class="container gallery-set">
 	<div class="row">
 		{% for g in gallerys %}
-		<div class="col-md-3">
+		<div class="col-md-2">
 			<div class="g-preview">
 				{% for p in g.p_preview %}
 				<a class="clip-photo" href="#" style="-webkit-transform: rotate({{p.degree}})" >
 					<img src="{{p.url}}" />
 				</a>
 				{% endfor %}
+			</div>
+			<div>
 			</div>
 		</div>
 		{% endfor %}
